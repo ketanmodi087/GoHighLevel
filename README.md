@@ -77,67 +77,87 @@ These endpoints handle authentication with the Go High Level API.
 
 #### 2. OAuth Callback
 - **Endpoint**: `GET /auth/callback`
-- **Description**: Handles the callback from GHL after authorization. The response will include token details such as tokenId, expiresAt, and importantly, a userId. This userId must be passed as a path parameter for all subsequent API calls.
+- **Description**: Handles the callback from GHL after authorization. The response will include token details such as tokenId, expiresAt, and importantly, an accessToken. This accessToken must be used in the Authorization header for all subsequent API calls.
 - **Response Example**:
+  ```json
   {
     "message": "Authorization successful",
     "tokenId": "tokenId string",
     "expiresAt": "expire date",
-    "userId": "userId string"
+    "accessToken": "your_access_token"
   }
-- **Note**: This endpoint is automatically called by GHL after authorization. Ensure you use the returned userId in other API requests.
+  ```
+- **Note**: This endpoint is automatically called by GHL after authorization. Ensure you use the returned accessToken in the Authorization header for other API requests.
 
 #### 3. Refresh Token
-- **Endpoint**: `POST /tokens/:userId/refresh`
+- **Endpoint**: `POST /api/tokens/refresh`
 - **Description**: Refreshes an expired access token.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Test Command**:
   ```bash
-  curl --location --request POST 'http://localhost:3000/api/tokens/:userId/refresh' \
+  curl --location --request POST 'http://localhost:3000/api/tokens/refresh' \
+  --header 'Authorization: Bearer your_access_token' \
   --header 'Content-Type: application/json'
   ```
 
 ### API Endpoints
 
-These endpoints interact with the Go High Level API.
+These endpoints interact with the Go High Level API. All endpoints require an Authorization header with a Bearer token.
 
 #### 1. Get Contacts
-- **Endpoint**: `GET /api/contacts/:userId`
-- **Description**: Retrieves contacts from GHL. (Use the userId received from the OAuth callback.)
+- **Endpoint**: `GET /api/contacts`
+- **Description**: Retrieves contacts from GHL.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Test Command**:
   ```bash
-  curl --location 'http://localhost:3000/api/contacts/:userId'
+  curl --location 'http://localhost:3000/api/contacts' \
+  --header 'Authorization: Bearer your_access_token'
   ```
 
 #### 2. Get Opportunities
-- **Endpoint**: `GET /api/opportunities/:userId`
-- **Description**: Retrieves opportunities from GHL. (Use the userId received from the OAuth callback.)
+- **Endpoint**: `GET /api/opportunities`
+- **Description**: Retrieves opportunities from GHL.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Test Command**:
   ```bash
-  curl --location 'http://localhost:3000/api/opportunities/:userId'
+  curl --location 'http://localhost:3000/api/opportunities' \
+  --header 'Authorization: Bearer your_access_token'
   ```
 
 #### 3. Get Users
-- **Endpoint**: `GET /api/users/:userId`
-- **Description**: Retrieves users from GHL. (Use the userId received from the OAuth callback.)
+- **Endpoint**: `GET /api/users`
+- **Description**: Retrieves users from GHL.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Curl**:
   ```bash
-  curl --location 'http://localhost:3000/api/users/:userId'
+  curl --location 'http://localhost:3000/api/users' \
+  --header 'Authorization: Bearer your_access_token'
   ```
 
 #### 4. Get Calendars
-- **Endpoint**: `GET /api/calendars/:userId`
-- **Description**: Retrieves calendars from GHL. (Use the userId received from the OAuth callback.)
+- **Endpoint**: `GET /api/calendars`
+- **Description**: Retrieves calendars from GHL.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Curl**:
   ```bash
-  curl --location 'http://localhost:3000/api/calendars/:userId'
+  curl --location 'http://localhost:3000/api/calendars' \
+  --header 'Authorization: Bearer your_access_token'
   ```
 
 #### 5. Get Associations
-- **Endpoint**: `GET /api/associations/:userId`
-- **Description**: Retrieves associations from GHL. (Use the userId received from the OAuth callback.)
+- **Endpoint**: `GET /api/associations`
+- **Description**: Retrieves associations from GHL.
+- **Headers**:
+  - `Authorization: Bearer your_access_token`
 - **Curl**:
   ```bash
-  curl --location 'http://localhost:3000/api/associations/:userId'
+  curl --location 'http://localhost:3000/api/associations' \
+  --header 'Authorization: Bearer your_access_token'
   ```
 
 ## Project Structure 

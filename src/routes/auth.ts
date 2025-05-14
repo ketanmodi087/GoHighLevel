@@ -33,6 +33,7 @@ router.get("/callback", async (req, res) => {
       tokenId: token._id,
       expiresAt: token.expiresAt,
       userId: token.userId,
+      accessToken: token.accessToken,
     });
   } catch (error) {
     // Log the error and send a failure response if token exchange fails

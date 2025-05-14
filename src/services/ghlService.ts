@@ -40,7 +40,14 @@ export const exchangeCodeForToken = async (code: string): Promise<IToken> => {
       userId: string;
     }>("/oauth/token", params);
 
-    const { access_token, refresh_token, expires_in, locationId, companyId, userId } = response;
+    const {
+      access_token,
+      refresh_token,
+      expires_in,
+      locationId,
+      companyId,
+      userId,
+    } = response;
 
     // Determine token expiration date
     const expiresAt = new Date();
@@ -116,10 +123,10 @@ export const refreshAccessToken = async (token: IToken): Promise<IToken> => {
 };
 
 // Retrieve a valid token for the given user ID; refresh if it's expiring soon
-export const getValidToken = async (userId: string): Promise<IToken> => {
-  const token = await Token.findOne({ userId });
+export const getValidToken = async (accessToken: string): Promise<IToken> => {
+  const token = await Token.findOne({ accessToken });
   if (!token) {
-    throw new Error("Token not found");
+    throw new Error("Invalid token provided");
   }
 
   // Refresh token if it expires within the next 5 minutes
@@ -160,9 +167,7 @@ export const fetchContacts = async (
 };
 
 // Fetch opportunities based on the token's associated location
-export const fetchOpportunities = async (
-  token: IToken,
-): Promise<any> => {
+export const fetchOpportunities = async (token: IToken): Promise<any> => {
   try {
     const locId = token.locationId;
     if (!locId) {
@@ -181,9 +186,7 @@ export const fetchOpportunities = async (
 };
 
 // Fetch users data from the API
-export const fetchUsers = async (
-  token: IToken,
-): Promise<any> => {
+export const fetchUsers = async (token: IToken): Promise<any> => {
   try {
     // Retrieve users using the provided token
     return await makeAuthenticatedRequest({
@@ -197,9 +200,7 @@ export const fetchUsers = async (
 };
 
 // Fetch calendar events
-export const fetchCalendars = async (
-  token: IToken,
-): Promise<any> => {
+export const fetchCalendars = async (token: IToken): Promise<any> => {
   try {
     // Access calendar endpoint with authenticated request
     return await makeAuthenticatedRequest({
@@ -213,9 +214,7 @@ export const fetchCalendars = async (
 };
 
 // Fetch associations linked to the account
-export const fetchAssociations = async (
-  token: IToken,
-): Promise<any> => {
+export const fetchAssociations = async (token: IToken): Promise<any> => {
   try {
     // Retrieve associations data using the token
     return await makeAuthenticatedRequest({

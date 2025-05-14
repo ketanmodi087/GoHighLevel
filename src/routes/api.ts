@@ -7,13 +7,13 @@ import {
   fetchUsers,
   refreshAccessToken,
 } from "../services/ghlService";
-import { validateUserId } from "../utils/middleware";
+import { validateToken } from "../utils/middleware";
 import { IToken } from "../models/Token";
 
 const router = express.Router();
 
-// Refresh token endpoint for a user
-router.post("/tokens/:userId/refresh", validateUserId, async (req, res) => {
+// Refresh token endpoint
+router.post("/tokens/refresh", validateToken, async (req, res) => {
   try {
     // Use the token from the request to refresh and return a new access token
     const token = await refreshAccessToken(req?.token as IToken);
@@ -22,6 +22,7 @@ router.post("/tokens/:userId/refresh", validateUserId, async (req, res) => {
       message: "Token refreshed successfully",
       userId: token._id,
       expiresAt: token.expiresAt,
+      accessToken: token.accessToken,
     });
   } catch (error) {
     console.error("Error refreshing token:", error);
@@ -30,7 +31,7 @@ router.post("/tokens/:userId/refresh", validateUserId, async (req, res) => {
 });
 
 // Get contacts endpoint (with optional pagination)
-router.get("/contacts/:userId", validateUserId, async (req, res) => {
+router.get("/contacts", validateToken, async (req, res) => {
   try {
     const { page, limit } = req.query;
     // Retrieve contacts using the user token and pagination params if provided
@@ -46,7 +47,7 @@ router.get("/contacts/:userId", validateUserId, async (req, res) => {
 });
 
 // Get opportunities endpoint
-router.get("/opportunities/:userId", validateUserId, async (req, res) => {
+router.get("/opportunities", validateToken, async (req, res) => {
   try {
     // Fetch opportunities using the validated token
     const opportunities = await fetchOpportunities(req?.token as IToken);
@@ -58,7 +59,7 @@ router.get("/opportunities/:userId", validateUserId, async (req, res) => {
 });
 
 // Get users endpoint
-router.get("/users/:userId", validateUserId, async (req, res) => {
+router.get("/users", validateToken, async (req, res) => {
   try {
     // Retrieve users data with the provided token
     const users = await fetchUsers(req?.token as IToken);
@@ -70,7 +71,7 @@ router.get("/users/:userId", validateUserId, async (req, res) => {
 });
 
 // Get calendars endpoint
-router.get("/calendars/:userId", validateUserId, async (req, res) => {
+router.get("/calendars", validateToken, async (req, res) => {
   try {
     // Fetch calendars using the authenticated user's token
     const calendars = await fetchCalendars(req?.token as IToken);
@@ -82,7 +83,7 @@ router.get("/calendars/:userId", validateUserId, async (req, res) => {
 });
 
 // Get associations endpoint
-router.get("/associations/:userId", validateUserId, async (req, res) => {
+router.get("/associations", validateToken, async (req, res) => {
   try {
     // Retrieve associations using the current user token
     const associations = await fetchAssociations(req?.token as IToken);
