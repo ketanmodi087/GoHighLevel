@@ -1,6 +1,6 @@
 # GHL Integration API
 
-Node.js,Express, MongoDB and API integration with Go High Level (GHL) services.
+Node.js, Express, MongoDB and API integration with Go High Level (GHL) services.
 
 ## Table of Contents
 - [Setup Instructions](#setup-instructions)
@@ -49,17 +49,13 @@ Node.js,Express, MongoDB and API integration with Go High Level (GHL) services.
    npm run dev
    ```
 
-   For the prodcution version
-
-
+   For the production version:
    ```bash
    npm run build
    ```
    ```bash
    npm run start
    ```
-   
-  
 
 5. **Verify the server is running**
    Open your browser and navigate to `http://localhost:3000`. You should see the message "GHL Integration API is running".
@@ -72,33 +68,33 @@ These endpoints handle authentication with the Go High Level API.
 
 #### 1. Initiate OAuth Flow
 - **Endpoint**: `GET /auth/authorize`
-- **Description**: Redirects to GHL authorization page
+- **Description**: Redirects to GHL authorization page.
 - **URL for Browser**:
   ```bash
   http://localhost:3000/auth/authorize
   ```
-  Please copy paste this url in browser and it will redirect to **GHL authorization page** and after approved it will recirect us to callback page with token
-
+  Please copy and paste this URL in your browser. It will redirect you to the **GHL authorization page**. After approval, you will be redirected to the callback endpoint.
 
 #### 2. OAuth Callback
 - **Endpoint**: `GET /auth/callback`
-- **Description**: Handles the callback from GHL after authorization and it will show respose something like below
-{
-  "message": "Authorization successful",
-  "tokenId": "tokenId string",
-  "expiresAt": "expire date",
-  "userId": "user is string"
-}
-- **Note**: This is automatically called by GHL after authorization 
+- **Description**: Handles the callback from GHL after authorization. The response will include token details such as tokenId, expiresAt, and importantly, a userId. This userId must be passed as a path parameter for all subsequent API calls.
+- **Response Example**:
+  {
+    "message": "Authorization successful",
+    "tokenId": "tokenId string",
+    "expiresAt": "expire date",
+    "userId": "userId string"
+  }
+- **Note**: This endpoint is automatically called by GHL after authorization. Ensure you use the returned userId in other API requests.
 
 #### 3. Refresh Token
 - **Endpoint**: `POST /tokens/:userId/refresh`
-- **Description**: Refreshes an expired access token
+- **Description**: Refreshes an expired access token.
 - **Test Command**:
   ```bash
-  curl --location --request POST 'http://localhost:3000/api/tokens/:userId/refresh' 
+  curl --location --request POST 'http://localhost:3000/api/tokens/:userId/refresh' \
   --header 'Content-Type: application/json'
-   ```
+  ```
 
 ### API Endpoints
 
@@ -106,7 +102,7 @@ These endpoints interact with the Go High Level API.
 
 #### 1. Get Contacts
 - **Endpoint**: `GET /api/contacts/:userId`
-- **Description**: Retrieves contacts from GHL
+- **Description**: Retrieves contacts from GHL. (Use the userId received from the OAuth callback.)
 - **Test Command**:
   ```bash
   curl --location 'http://localhost:3000/api/contacts/:userId'
@@ -114,7 +110,7 @@ These endpoints interact with the Go High Level API.
 
 #### 2. Get Opportunities
 - **Endpoint**: `GET /api/opportunities/:userId`
-- **Description**: Retrieves opportunities from GHL
+- **Description**: Retrieves opportunities from GHL. (Use the userId received from the OAuth callback.)
 - **Test Command**:
   ```bash
   curl --location 'http://localhost:3000/api/opportunities/:userId'
@@ -122,7 +118,7 @@ These endpoints interact with the Go High Level API.
 
 #### 3. Get Users
 - **Endpoint**: `GET /api/users/:userId`
-- **Description**: Retrieves users from GHL
+- **Description**: Retrieves users from GHL. (Use the userId received from the OAuth callback.)
 - **Curl**:
   ```bash
   curl --location 'http://localhost:3000/api/users/:userId'
@@ -130,7 +126,7 @@ These endpoints interact with the Go High Level API.
 
 #### 4. Get Calendars
 - **Endpoint**: `GET /api/calendars/:userId`
-- **Description**: Retrieves calendars from GHL
+- **Description**: Retrieves calendars from GHL. (Use the userId received from the OAuth callback.)
 - **Curl**:
   ```bash
   curl --location 'http://localhost:3000/api/calendars/:userId'
@@ -138,7 +134,7 @@ These endpoints interact with the Go High Level API.
 
 #### 5. Get Associations
 - **Endpoint**: `GET /api/associations/:userId`
-- **Description**: Retrieves associations from GHL
+- **Description**: Retrieves associations from GHL. (Use the userId received from the OAuth callback.)
 - **Curl**:
   ```bash
   curl --location 'http://localhost:3000/api/associations/:userId'
@@ -147,31 +143,30 @@ These endpoints interact with the Go High Level API.
 ## Project Structure 
 ```
 ├── src/
-│ ├── index.ts # Entry point
-│ ├── routes/
-│ │ ├── auth.ts # Authentication routes
-│ │ └── api.ts # API routes
-│ ├── services/
-│ │ ├── ghlService.ts # GHL API service
-│ │ └── apiService.ts # Internal API service
-│ ├── utils/
-│ │ ├── dbconnection.ts # Database
-│ │ ├── middleware.ts # Express middleware
-│ │ └── constants.ts # Constants and config
-│ └── models/
-│ └── Token.ts # Token model
+│   ├── index.ts # Entry point
+│   ├── routes/
+│   │   ├── auth.ts # Authentication routes
+│   │   └── api.ts # API routes
+│   ├── services/
+│   │   ├── ghlService.ts # GHL API service
+│   │   └── apiService.ts # Internal API service
+│   ├── utils/
+│   │   ├── dbconnection.ts # Database
+│   │   ├── middleware.ts # Express middleware
+│   │   └── constants.ts # Constants and config
+│   └── models/
+│       └── Token.ts # Token model
 ├── .env # Environment variables
 ├── package.json # Dependencies
 └── tsconfig.json # TypeScript configuration
-
 ```
 
 ## Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| PORT | Port for the Express server | 3000 |
-| MONGODB_URI | MongoDB connection string | mongodb://localhost:27017/ghl-integration |
-| GHL_CLIENT_ID | GHL OAuth client ID | your_client_id |
-| GHL_CLIENT_SECRET | GHL OAuth client secret | your_client_secret |
-| GHL_REDIRECT_URI | OAuth callback URL | http://localhost:3000/auth/callback |
+| Variable           | Description                         | Example                                     |
+|--------------------|-------------------------------------|---------------------------------------------|
+| PORT               | Port for the Express server         | 3000                                        |
+| MONGODB_URI        | MongoDB connection string           | mongodb://localhost:27017/ghl-integration   |
+| GHL_CLIENT_ID      | GHL OAuth client ID                 | your_client_id                              |
+| GHL_CLIENT_SECRET  | GHL OAuth client secret             | your_client_secret                          |
+| GHL_REDIRECT_URI   | OAuth callback URL                  | http://localhost:3000/auth/callback           |
